@@ -2,6 +2,8 @@
 
 SDL_imageNuGetizer provides actions for automatically creating NuGet packages of SDL2_image binaries.
 
+[![nuget](https://github.com/ronaldvanmanen/SDL_imageNuGetizer/actions/workflows/nugetize-sdl2_image.yml/badge.svg)](https://github.com/ronaldvanmanen/SDL_imageNuGetizer/actions/workflows/nugetize-sdl2_image.yml)
+
 ## Table of Contents
 
 * [Code of Conduct](#code-of-conduct)
