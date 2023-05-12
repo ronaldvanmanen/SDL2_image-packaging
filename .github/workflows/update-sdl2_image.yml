@@ -1,0 +1,18 @@
+name: update-sdl2_image
+
+on:
+  schedule:
+    - cron:  '2 4 * * *'
+  workflow_dispatch:
+
+jobs:
+  update-sdl2_image:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+    - run: .\scripts\update-sdl2_image.cmd
+      shell: cmd
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
