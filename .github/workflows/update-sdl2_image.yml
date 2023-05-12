@@ -1,4 +1,4 @@
-name: update-sdl2_image.yml
+name: update-sdl2_image
 
 on:
   schedule:
