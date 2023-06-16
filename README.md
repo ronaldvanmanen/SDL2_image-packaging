@@ -2,9 +2,6 @@
 
 SDL2_image-packaging provides actions for automatically creating NuGet packages of SDL2_image binaries.
 
-[![nugetize-sdl2](https://github.com/ronaldvanmanen/SDL2_image-packaging/actions/workflows/nugetize-sdl2_image.yml/badge.svg)](https://github.com/ronaldvanmanen/SDL2_image-packaging/actions/workflows/nugetize-sdl2_image.yml)
-[![update-sdl2](https://github.com/ronaldvanmanen/SDL2_image-packaging/actions/workflows/update-sdl2_image.yml/badge.svg)](https://github.com/ronaldvanmanen/SDL2_image-packaging/actions/workflows/update-sdl2_image.yml)
-
 ## Table of Contents
 
 * [Code of Conduct](#code-of-conduct)
