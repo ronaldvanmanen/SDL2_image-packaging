@@ -170,7 +170,9 @@ cmake -S "$SourceDir" -B "$BuildDir" -G Ninja \
   -DSDL2IMAGE_JXL=ON \
   -DSDL2IMAGE_TIF=ON \
   -DSDL2IMAGE_WEBP=ON \
-  -DSDL2IMAGE_VENDORED=ON
+  -DSDL2IMAGE_VENDORED=ON \
+  -DSDL2IMAGE_TESTS=ON \
+  -DSDL2IMAGE_DEPS_SHARED=OFF
 LAST_EXITCODE=$?
 if [ $LAST_EXITCODE != 0 ]; then
   echo "$ScriptName: Failed to setup build for SDL2_image in $BuildDir."
@@ -182,6 +184,34 @@ cmake --build "$BuildDir" --config Release --parallel
 LAST_EXITCODE=$?
 if [ $LAST_EXITCODE != 0 ]; then
   echo "$ScriptName: Failed to build SDL2_image in $BuildDir."
+  exit "$LAST_EXITCODE"
+fi
+
+echo "$ScriptName: Running SDL2_image build-time tests in $BuildDir..."
+export SDL_IMAGE_TEST_REQUIRE_LOAD_AVIF=0
+export SDL_IMAGE_TEST_REQUIRE_LOAD_BMP=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_CUR=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_GIF=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_ICO=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_JPG=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_JXL=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_LBM=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_PCX=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_PNG=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_PNM=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_QOI=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_SVG=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_TGA=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_TIF=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_WEBP=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_XPM=1
+export SDL_IMAGE_TEST_REQUIRE_LOAD_XV=1
+export SDL_IMAGE_TEST_REQUIRE_SAVE_JPG=1
+export SDL_IMAGE_TEST_REQUIRE_SAVE_PNG=1
+ctest -VV --test-dir "$BuildDir/test"
+LAST_EXITCODE=$?
+if [ $LAST_EXITCODE != 0 ]; then
+  echo "$ScriptName: Failed to run SDL2_image build-time tests in $BuildDir."
   exit "$LAST_EXITCODE"
 fi
 
