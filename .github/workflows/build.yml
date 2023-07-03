@@ -1,0 +1,124 @@
+name: build
+
+on:
+  push:
+    branches:
+      - 'main'
+      - 'release/**'
+    tags:
+      - 'v*'
+  pull_request:
+    branches:
+      - 'main'
+
+jobs:
+  build-windows:
+    name: ${{ matrix.platform.name }}
+    runs-on: ${{ matrix.platform.os }}
+    strategy:
+      matrix:
+        platform:
+        - { name: Build Windows (x64), os: windows-latest, architecture: x64 }
+        - { name: Build Windows (x86), os: windows-latest, architecture: x86 }
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        submodules: recursive
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+        source-url: https://pkgs.dev.azure.com/ronaldvanmanen/SDL2Sharp/_packaging/SDL2Sharp/nuget/v3/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
+    - run: .\scripts\build-windows.cmd -architecture ${{ matrix.platform.architecture }}
+      shell: cmd
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
+    - uses: actions/upload-artifact@v3
+      with:
+        name: artifacts
+        path: .\artifacts\pkg\**\*
+        if-no-files-found: error
+  build-linux:
+    name: ${{ matrix.platform.name }}
+    runs-on: ${{ matrix.platform.os }}
+    strategy:
+      matrix:
+        platform:
+          - { name: Build Linux (x64), os: ubuntu-latest, architecture: x64 }
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        submodules: recursive
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+        source-url: https://pkgs.dev.azure.com/ronaldvanmanen/SDL2Sharp/_packaging/SDL2Sharp/nuget/v3/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
+    - uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: '6.x'
+    - run: ./scripts/build-linux.sh --architecture ${{ matrix.platform.architecture }}
+      shell: bash
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
+    - uses: actions/upload-artifact@v3
+      with:
+        name: artifacts
+        path: ./artifacts/pkg/**/*
+        if-no-files-found: error
+  build-multiplatform:
+    name: Build Multiplatform
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        fetch-depth: 0
+        submodules: recursive
+    - uses: nuget/setup-nuget@v1
+      with:
+        nuget-version: '6.x'
+    - run: .\scripts\build-multiplatform.cmd
+      shell: cmd
+    - uses: actions/upload-artifact@v3
+      with:
+        name: artifacts
+        path: .\artifacts\pkg\**\*
+        if-no-files-found: error
+  publish-artifacts-on-azure:
+    name: Publish Artifacts on Azure
+    runs-on: ubuntu-latest
+    needs: [ build-windows, build-linux, build-multiplatform ]
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: artifacts
+        path: ./artifacts
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+        source-url: https://pkgs.dev.azure.com/ronaldvanmanen/SDL2Sharp/_packaging/SDL2Sharp/nuget/v3/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.AZURE_DEVOPS_PAT }}
+    - run: dotnet nuget push "./artifacts/**/*.nupkg" --api-key AzureDevOps --skip-duplicate
+  publish-artifacts-on-github:
+    name: Publish Artifacts on GitHub
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write    
+    needs: [ build-windows, build-linux, build-multiplatform ]
+    steps:
+    - uses: actions/download-artifact@v3
+      with:
+        name: artifacts
+        path: ./artifacts
+    - uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '6.0.x'
+        source-url: https://nuget.pkg.github.com/ronaldvanmanen/index.json
+      env:
+        NUGET_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - run: dotnet nuget push "./artifacts/**/*.nupkg" --source "https://nuget.pkg.github.com/ronaldvanmanen/index.json" --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate

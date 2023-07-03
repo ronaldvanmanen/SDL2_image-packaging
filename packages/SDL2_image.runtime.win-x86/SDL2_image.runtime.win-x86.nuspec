@@ -8,7 +8,7 @@
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <license type="expression">Zlib</license>
     <projectUrl>https://github.com/ronaldvanmanen/SDL_imageNuGetizer</projectUrl>
-    <description>win x86 native library for SDL2_image.</description>
+    <description>Windows x86 native library for SDL2_image.</description>
     <copyright>Copyright © Ronald van Manen</copyright>
     <repository type="git" url="https://github.com/ronaldvanmanen/SDL_imageNuGetizer" />
   </metadata>
