@@ -1,15 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
   <metadata minClientVersion="2.12">
-    <id>SDL2_image.runtime.win-x64</id>
+    <id>SDL2_image</id>
     <version>$version$</version>
     <authors>Ronald van Manen</authors>
     <owners>Ronald van Manen</owners>
     <requireLicenseAcceptance>true</requireLicenseAcceptance>
     <license type="expression">Zlib</license>
-    <projectUrl>https://github.com/ronaldvanmanen/SDL_imageNuGetizer</projectUrl>
-    <description>win x64 native library for SDL2_image.</description>
+    <projectUrl>https://github.com/ronaldvanmanen/SDL2_image-packaging</projectUrl>
+    <description>Multi-platform native library for SDL2_image.</description>
     <copyright>Copyright © Ronald van Manen</copyright>
-    <repository type="git" url="https://github.com/ronaldvanmanen/SDL_imageNuGetizer" />
+    <repository type="git" url="https://github.com/ronaldvanmanen/SDL2_image-packaging" />
+    <dependencies>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="SDL2" version="[2.0.9,3.0.0)" />
+      </group>
+    </dependencies>
   </metadata>
 </package>
