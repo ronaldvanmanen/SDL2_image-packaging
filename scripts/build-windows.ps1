@@ -87,7 +87,7 @@ try {
     throw "${ScriptName}: Failed restore dotnet tools."
   }
 
-  $SDL2PackageSource = "https://pkgs.dev.azure.com/ronaldvanmanen/SDL2Sharp/_packaging/SDL2Sharp/nuget/v3/index.json"
+  $SDL2PackageSource = "https://pkgs.dev.azure.com/ronaldvanmanen/_packaging/ronaldvanmanen/nuget/v3/index.json"
   
   if ($null -ne $env:NUGET_AUTH_TOKEN) {
     Write-Host "${ScriptName}: Settings API key for package source $SDL2PackageSource..." -ForegroundColor Yellow
